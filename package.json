@@ -2,9 +2,12 @@
   "name": "rogermelich-forms",
   "version": "1.0.4",
   "description": "Forms ",
-  "main": "./src/Errors.js",
+  "main": "dist/Form.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --ext .js",
+    "build": "babel src --presets babel-preset-es2015 --out-dir dist",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -17,7 +20,11 @@
   },
   "homepage": "https://github.com/rogermelich/rogermelich-forms#readme",
   "dependencies": {
-    "axios": "^0.15.3"
+    "axios": "^0.15.3",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "eslint-plugin-you-dont-need-lodash-underscore": "^6.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
