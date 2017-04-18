@@ -1,6 +1,6 @@
 {
   "name": "rogermelich-forms",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Forms ",
   "main": "dist/Form.js",
   "scripts": {
