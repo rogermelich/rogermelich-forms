@@ -1,3 +1,5 @@
+/* global FormData */
+
 import Errors from './Errors'
 
 import axios from 'axios'
@@ -8,7 +10,9 @@ export default class Form {
      *
      * @param fields
      */
-    constructor (fields) {
+    constructor(fields) {
+        fields = this.convertFromFormData(fields)
+
         this.clearOnSubmit = false
 
         this.originalFields = fields
@@ -23,12 +27,29 @@ export default class Form {
     }
 
     /**
+     * Convert from FormData.
+     *
+     * @param fields
+     * @returns {*}
+     */
+    convertFromFormData(fields) {
+        if (fields instanceof FormData) {
+            var rv = {}
+            for (var pair of fields.entries()) {
+                if (pair[1] !== undefined) rv[pair[0]] = pair[1]
+            }
+            return rv
+        }
+        return fields
+    }
+
+    /**
      * Retrieve the field form.
      *
      * @param field
      * @returns {*}
      */
-    get (field) {
+    get(field) {
         if (this.has(field)) {
             return this[field]
         }
@@ -40,7 +61,7 @@ export default class Form {
      * @param field
      * @param value
      */
-    set (field, value) {
+    set(field, value) {
         if (this.has(field)) {
             this[field] = value
         }
@@ -52,7 +73,7 @@ export default class Form {
      * @param field
      * @returns {boolean}
      */
-    has (field) {
+    has(field) {
         return this.hasOwnProperty(field)
     }
 
@@ -60,7 +81,7 @@ export default class Form {
      * Reset form.
      *
      */
-    reset () {
+    reset() {
         this.fields = {}
 
         for (let field in this.originalFields) {
@@ -74,7 +95,7 @@ export default class Form {
      * Activates form clearing/reset after submit.
      *
      */
-    clearOnSubmit () {
+    clearOnSubmit() {
         this.clearOnSubmit = true
     }
 
@@ -82,7 +103,7 @@ export default class Form {
      * Reset status.
      *
      */
-    resetStatus () {
+    resetStatus() {
         this.errors.forget()
         this.submitting = false
         this.submitted = false
@@ -94,7 +115,7 @@ export default class Form {
      *
      * @returns {{}}
      */
-    data () {
+    data() {
         let data = {}
 
         for (let field in this.originalFields) {
@@ -108,7 +129,7 @@ export default class Form {
      * Start processing the form.
      *
      */
-    startProcessing () {
+    startProcessing() {
         this.errors.forget()
         this.submitting = true
         this.succeeded = false
@@ -118,7 +139,7 @@ export default class Form {
      * Finish processing the form.
      *
      */
-    finishProcessing () {
+    finishProcessing() {
         this.submitting = false
         this.submitted = false
         this.succeeded = true
@@ -127,7 +148,7 @@ export default class Form {
     /**
      * Finish processing the form on errors.
      */
-    finishProcessingOnErrors () {
+    finishProcessingOnErrors() {
         this.submitting = false
         this.submitted = false
         this.succeeded = false
@@ -139,7 +160,7 @@ export default class Form {
      * @param url
      * @returns {*}
      */
-    post (url) {
+    post(url) {
         return this.submit('post', url)
     }
 
@@ -149,7 +170,7 @@ export default class Form {
      * @param url
      * @returns {*}
      */
-    put (url) {
+    put(url) {
         return this.submit('put', url)
     }
 
@@ -159,7 +180,7 @@ export default class Form {
      * @param url
      * @returns {*}
      */
-    patch (url) {
+    patch(url) {
         return this.submit('patch', url)
     }
 
@@ -169,7 +190,7 @@ export default class Form {
      * @param url
      * @returns {*}
      */
-    delete (url) {
+    delete(url) {
         return this.submit('delete', url)
     }
 
@@ -180,7 +201,7 @@ export default class Form {
      * @param url
      * @returns {Promise}
      */
-    submit (requesType, url) {
+    submit(requesType, url) {
         this.startProcessing()
         return new Promise((resolve, reject) => {
             axios[requesType](url, this.data())
@@ -198,7 +219,7 @@ export default class Form {
     /**
      * Process on success.
      */
-    onSuccess () {
+    onSuccess() {
         this.finishProcessing()
         if (this.clearOnSubmit) this.reset()
     }
@@ -208,7 +229,7 @@ export default class Form {
      *
      * @param errors
      */
-    onFail (errors) {
+    onFail(errors) {
         this.errors.record(errors)
         this.finishProcessingOnErrors()
     }
@@ -218,7 +239,7 @@ export default class Form {
      *
      * @param errors
      */
-    setErrors (errors) {
+    setErrors(errors) {
         this.submitting = false
         this.errors.set(errors)
     };
